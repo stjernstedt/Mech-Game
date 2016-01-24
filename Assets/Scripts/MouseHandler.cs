@@ -4,12 +4,11 @@ using System.Collections.Generic;
 
 public class MouseHandler : MonoBehaviour
 {
-	Dictionary<Vector3, Node> hexes;
 
 	// Use this for initialization
 	void Start()
 	{
-		hexes = GameObject.Find("World Data").GetComponent<CreateMap>().hexes;
+
 	}
 
 	// Update is called once per frame
