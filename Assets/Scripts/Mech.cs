@@ -3,8 +3,9 @@ using System.Collections;
 
 public class Mech : MonoBehaviour
 {
-	int hp = 30;
-	int armor = 5;
+	public int hp = 30;
+	public int armor = 5;
+	public int moves = 5;
 
 	PlayerHandler playerHandler;
 	Action[] actions;

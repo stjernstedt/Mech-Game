@@ -16,7 +16,7 @@ public class PlayerHandler : MonoBehaviour
 	AStar astar;
 
 	Vector3 currentCell;
-	Stack<Node> path;
+	List<Node> path;
 	Node dest;
 	Node oldDest;
 	public float walkSpeed = 0.5f;
@@ -26,6 +26,13 @@ public class PlayerHandler : MonoBehaviour
 	int temp = 0;
 
 	public GameObject buttonPrefab;
+
+	public int shortRange = 2;
+	public int mediumRange = 4;
+
+	public Color shortColor;
+	public Color mediumColor;
+	public Color farColor;
 
 	// Use this for initialization
 	void Start()
@@ -63,6 +70,15 @@ public class PlayerHandler : MonoBehaviour
 					{
 						path = astar.CalculatePath(currentCell, dest.coord);
 					}
+					for (int i = 0; i < path.Count; i++)
+					{
+						if (i <= shortRange)
+							hexes[path[i].coord].GetComponent<MeshRenderer>().material.color = shortColor;
+						if (i > shortRange && i <= mediumRange)
+							hexes[path[i].coord].GetComponent<MeshRenderer>().material.color = mediumColor;
+						if (i > mediumRange)
+							hexes[path[i].coord].GetComponent<MeshRenderer>().material.color = farColor;
+					}
 				}
 			}
 
@@ -93,13 +109,23 @@ public class PlayerHandler : MonoBehaviour
 	IEnumerator Walk()
 	{
 		walking = true;
-		while (path.Count > 0)
+
+		for (int i = 0; i < path.Count; i++)
 		{
-			Node node = path.Pop();
+
+			Node node = path[i];
 			float cellHeight = hexes[node.coord].GetComponent<MeshRenderer>().bounds.max.y;
 			selected.transform.position = node.transform.position + new Vector3(0, cellHeight, 0);
 			yield return new WaitForSeconds(walkSpeed);
+
 		}
+		//while (path.Count > 0 && selected.GetComponent<Mech>().moves > 0)
+		//{
+		//	Node node = path.Pop();
+		//	float cellHeight = hexes[node.coord].GetComponent<MeshRenderer>().bounds.max.y;
+		//	selected.transform.position = node.transform.position + new Vector3(0, cellHeight, 0);
+		//	yield return new WaitForSeconds(walkSpeed);
+		//}
 		path.Clear();
 		walking = false;
 	}

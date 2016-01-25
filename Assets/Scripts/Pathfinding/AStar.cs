@@ -20,7 +20,7 @@ public class AStar : MonoBehaviour
 		hexes = GameObject.Find("World Data").GetComponent<CreateMap>().hexes;
 	}
 
-	public Stack<Node> CalculatePath(Vector3 start, Vector3 dest)
+	public List<Node> CalculatePath(Vector3 start, Vector3 dest)
 	{
 		// resets color on previous marked cells
 		resetPath();
@@ -72,20 +72,26 @@ public class AStar : MonoBehaviour
 		Vector3 loc = dest;
 
 		// path to return, as stack since cells are added from destination to start
-		Stack<Node> path = new Stack<Node>();
+		Stack<Node> pathTemp = new Stack<Node>();
 
 		hexes[loc].GetComponent<MeshRenderer>().material.color = pathColor;
-		path.Push(hexes[loc]);
+		pathTemp.Push(hexes[loc]);
 		previousPath.Add(hexes[loc]);
 
 		do
 		{
 			loc = cameFrom[loc];
 			hexes[loc].GetComponent<MeshRenderer>().material.color = pathColor;
-			path.Push(hexes[loc]);
+			pathTemp.Push(hexes[loc]);
 			previousPath.Add(hexes[loc]);
 
 		} while (loc != start);
+
+		List<Node> path = new List<Node>();
+		while (pathTemp.Count > 0)
+		{
+			path.Add(pathTemp.Pop());
+		}
 
 		return path;
 	}

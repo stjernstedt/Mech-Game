@@ -35,7 +35,7 @@ public class Laser : Action
 
 	public IEnumerator Fire()
 	{
-		float timeVisible = 0.9f;
+		float timeVisible = 0.2f;
 		float timePassed = 0;
 		Vector3 origin = transform.position;
 		origin += new Vector3(0, 0.4f, 0);
@@ -44,6 +44,7 @@ public class Laser : Action
 		RaycastHit hit;
 		if (Physics.Raycast(ray, out hit, 100f))
 		{
+			lineRenderer.SetColors(iconColor, iconColor);
 			lineRenderer.SetVertexCount(2);
 			lineRenderer.SetPosition(0, origin);
 			lineRenderer.SetPosition(1, hit.point);
