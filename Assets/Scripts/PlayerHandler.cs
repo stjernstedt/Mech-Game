@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -20,8 +21,11 @@ public class PlayerHandler : MonoBehaviour
 	Node oldDest;
 	public float walkSpeed = 0.5f;
 	bool walking = false;
+	public bool actionRunning = false;
 
 	int temp = 0;
+
+	public GameObject buttonPrefab;
 
 	// Use this for initialization
 	void Start()
@@ -100,51 +104,6 @@ public class PlayerHandler : MonoBehaviour
 		walking = false;
 	}
 
-	public void Attack()
-	{
-		StartCoroutine(Fire());
-	}
-
-	public IEnumerator Fire()
-	{
-		LineRenderer lineRenderer = GetComponent<LineRenderer>();
-
-		float timeVisible = 0.2f;
-		float timePassed = 0;
-		//float playerHeight = player.GetComponent<MeshRenderer>().bounds.max.y;
-		//Vector3 origin = player.transform.FindChild("Canon").transform.position + new Vector3(0, playerHeight, 0);
-		Vector3 origin = player.transform.position;
-		Vector3 target = enemy.transform.position;
-		origin += new Vector3(0, 0.4f, 0);
-		target += new Vector3(0, 0.4f, 0);
-		Debug.Log(target);
-
-		Ray ray = new Ray(origin, target - origin);
-		RaycastHit hit;
-		if (Physics.Raycast(ray, out hit, 100f))
-		{
-			lineRenderer.SetVertexCount(2);
-			lineRenderer.SetPosition(0, origin);
-			//lineRenderer.SetPosition(1, target);
-			lineRenderer.SetPosition(1, hit.point);
-			lineRenderer.enabled = true;
-			Debug.Log("fire");
-		}
-		else
-		{
-			Debug.Log("miss");
-		}
-		Debug.Log(hit.collider.name);
-
-		while (timeVisible > timePassed)
-		{
-			timePassed += Time.deltaTime;
-			yield return null;
-		}
-		lineRenderer.enabled = false;
-
-	}
-
 	public void SelectUnit(GameObject unit)
 	{
 		if (selected != null)
@@ -153,5 +112,24 @@ public class PlayerHandler : MonoBehaviour
 		}
 		selected = unit;
 		selected.GetComponent<MeshRenderer>().material.color = Color.cyan;
+		PopulateActionsPanel();
+	}
+
+	void PopulateActionsPanel()
+	{
+		GameObject panel = GameObject.Find("ActionsPanel");
+		foreach (Transform button in panel.transform)
+		{
+			Destroy(button);
+		}
+
+		foreach (Action action in selected.GetComponents<Action>())
+		{
+			GameObject button = Instantiate(buttonPrefab);
+			button.GetComponent<ButtonData>().action = action;
+			button.transform.SetParent(panel.transform);
+			button.GetComponent<Image>().sprite = action.icon;
+			button.GetComponent<Image>().color = action.iconColor;
+		}
 	}
 }

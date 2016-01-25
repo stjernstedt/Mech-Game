@@ -7,11 +7,13 @@ public class Mech : MonoBehaviour
 	int armor = 5;
 
 	PlayerHandler playerHandler;
+	Action[] actions;
 
 	// Use this for initialization
 	void Start()
 	{
 		playerHandler = GameObject.Find("World Data").GetComponent<PlayerHandler>();
+		actions = GetComponents<Action>();
 	}
 
 	// Update is called once per frame
@@ -29,7 +31,10 @@ public class Mech : MonoBehaviour
 	{
 		if (Input.GetMouseButtonDown(0))
 		{
-			playerHandler.SelectUnit(gameObject);
+			if (!playerHandler.actionRunning)
+			{
+				playerHandler.SelectUnit(gameObject);
+			}
 		}
 	}
 }
