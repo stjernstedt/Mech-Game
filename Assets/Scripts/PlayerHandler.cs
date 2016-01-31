@@ -17,8 +17,8 @@ public class PlayerHandler : MonoBehaviour
 	DepthFirst depthFirst;
 
 	Vector3 currentCell;
-	//List<Node> path;
-	Stack<Node> path;
+	List<Node> path;
+	//Stack<Node> path;
 	Node dest;
 	Node oldDest;
 	public float walkSpeed = 0.5f;
@@ -123,32 +123,25 @@ public class PlayerHandler : MonoBehaviour
 	{
 		walking = true;
 
-		//for (int i = 0; i < path.Count; i++)
-		//{
+		for (int i = path.Count - 1; i >= 0; i--)
+		{
+			Node node = path[i];
+			float cellHeight = hexes[node.coord].GetComponent<MeshRenderer>().bounds.max.y;
+			selected.transform.position = node.transform.position + new Vector3(0, cellHeight, 0);
+			yield return new WaitForSeconds(walkSpeed);
+		}
 
-		//	Node node = path[i];
-		//	float cellHeight = hexes[node.coord].GetComponent<MeshRenderer>().bounds.max.y;
-		//	selected.transform.position = node.transform.position + new Vector3(0, cellHeight, 0);
-		//	yield return new WaitForSeconds(walkSpeed);
-
-		//}
-		//while (path.Count > 0 && selected.GetComponent<Mech>().moves > 0)
+		//while (path.Count > 0)
 		//{
 		//	Node node = path.Pop();
 		//	float cellHeight = hexes[node.coord].GetComponent<MeshRenderer>().bounds.max.y;
 		//	selected.transform.position = node.transform.position + new Vector3(0, cellHeight, 0);
 		//	yield return new WaitForSeconds(walkSpeed);
 		//}
-		while (path.Count > 0)
-		{
-			Node node = path.Pop();
-			float cellHeight = hexes[node.coord].GetComponent<MeshRenderer>().bounds.max.y;
-			selected.transform.position = node.transform.position + new Vector3(0, cellHeight, 0);
-			yield return new WaitForSeconds(walkSpeed);
-		}
 
 		depthFirst.Reset();
-		depthFirst.GetGrid(GetCurrentCell().coord);
+		depthFirst.GetGrid(GetCurrentCell().coord, selected.GetComponent<Mech>().moves);
+		ColorGrid();
 		path.Clear();
 		walking = false;
 	}
@@ -163,8 +156,23 @@ public class PlayerHandler : MonoBehaviour
 		selected = unit;
 		selected.GetComponent<MeshRenderer>().material.color = Color.cyan;
 		PopulateActionsPanel();
-		depthFirst.GetGrid(GetCurrentCell().coord);
+		depthFirst.GetGrid(GetCurrentCell().coord, selected.GetComponent<Mech>().moves);
+		ColorGrid();
+	}
 
+	void ColorGrid()
+	{
+		int range = selected.GetComponent<Mech>().moves;
+		foreach (Vector3 hex in depthFirst.costSoFar.Keys)
+		{
+			int costSoFar = depthFirst.costSoFar[hex];
+			if (costSoFar <= range * 0.4)
+				hexes[hex].GetComponent<MeshRenderer>().material.color = Color.green;
+			if (costSoFar > range * 0.4 && costSoFar <= range * 0.8)
+				hexes[hex].GetComponent<MeshRenderer>().material.color = Color.yellow;
+			if (costSoFar > range * 0.8)
+				hexes[hex].GetComponent<MeshRenderer>().material.color = Color.red;
+		}
 	}
 
 	void PopulateActionsPanel()

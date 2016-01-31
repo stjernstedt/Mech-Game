@@ -6,6 +6,7 @@ public class Mech : MonoBehaviour
 	public int hp = 30;
 	public int armor = 5;
 	public int moves = 5;
+	public int movesLeft;
 
 	PlayerHandler playerHandler;
 	Action[] actions;
@@ -15,6 +16,7 @@ public class Mech : MonoBehaviour
 	{
 		playerHandler = GameObject.Find("World Data").GetComponent<PlayerHandler>();
 		actions = GetComponents<Action>();
+		movesLeft = moves;
 	}
 
 	// Update is called once per frame

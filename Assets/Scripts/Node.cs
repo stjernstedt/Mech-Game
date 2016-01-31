@@ -18,11 +18,8 @@ public class Node : MonoBehaviour
 		}
 	}
 	public int cost = 1;
-	public int fromStart = 0;
-	public int toEnd = 0;
-	public int score = 0;
+	public int costSoFar = 0;
 	public bool walkable = true;
-	public int order = 0;
 	public List<Vector3> neighbours = new List<Vector3>();
 
 	Vector3[] directions = { new Vector3(+1, 0, -1), new Vector3(+1, -1, 0), new Vector3(0, -1, +1),
