@@ -51,12 +51,12 @@ public class CreateMap : MonoBehaviour
 			if (heightValue > 7f && heightValue < 8f)
 			{
 				node.transform.localScale = new Vector3(1, 1, 1.3f);
-				node.cost *= 2;
+				node.cost += 2;
 			}
 			if (heightValue >= 8f && heightValue < 9f)
 			{
 				node.transform.localScale = new Vector3(1, 1, 1.6f);
-				node.cost *= 3;
+				node.cost += 4;
 			}
 			if (heightValue >= 9f)
 			{

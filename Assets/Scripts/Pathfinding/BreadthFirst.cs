@@ -19,18 +19,45 @@ public class BreadthFirst : MonoBehaviour
 	Vector3 start = new Vector3(0, 0, 0);
 	Vector3 dest = new Vector3(-1, 4, -3);
 
+	PlayerHandler playerHandler;
+
 	// Use this for initialization
 	void Start()
 	{
 		hexes = GameObject.Find("World Data").GetComponent<CreateMap>().hexes;
-		frontier.Enqueue(start);
-		StartCoroutine(ExploreFrontier());
+		playerHandler = GameObject.Find("World Data").GetComponent<PlayerHandler>();
+		//frontier.Enqueue(start);
+		//StartCoroutine(ExploreFrontier());
 	}
 
-	// Update is called once per frame
-	void Update()
+	public void GetGrid()
 	{
-		
+		bool done = false;
+
+		frontier.Enqueue(playerHandler.GetCurrentCell().coord);
+		while (frontier.Count > 0 && !done)
+		{
+			Vector3 current = frontier.Dequeue();
+			List<Vector3> neighbours = hexes[current].GetComponent<Node>().neighbours;
+
+			foreach (Vector3 neighbour in neighbours)
+			{
+				if (hexes.ContainsKey(current + neighbour))
+				{
+					if (!cameFrom.ContainsKey(current + neighbour))
+					{
+						frontier.Enqueue(current + neighbour);
+						cameFrom.Add(current + neighbour, current);
+						hexes[current + neighbour].GetComponent<MeshRenderer>().material.color = Color.cyan;
+						if (current + neighbour == dest)
+						{
+							done = true;
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	IEnumerator ExploreFrontier()

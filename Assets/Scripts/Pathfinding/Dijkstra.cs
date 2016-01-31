@@ -15,20 +15,54 @@ public class Dijkstra : MonoBehaviour
 	Vector3 start = new Vector3(0, 0, 0);
 	Vector3 dest = new Vector3(-1, 4, -3);
 
+	PlayerHandler playerHandler;
+
 	// Use this for initialization
 	void Start()
 	{
 		hexes = GameObject.Find("World Data").GetComponent<CreateMap>().hexes;
+		playerHandler = GameObject.Find("World Data").GetComponent<PlayerHandler>();
+		//frontier.Enqueue(start, 0);
+		//cameFrom[start] = start;
+		//costSoFar[start] = 0;
+		//StartCoroutine(ExploreFrontier());
+	}
+
+	public void GetGrid()
+	{
+		start = playerHandler.GetCurrentCell().coord;
 		frontier.Enqueue(start, 0);
 		cameFrom[start] = start;
 		costSoFar[start] = 0;
-		StartCoroutine(ExploreFrontier());
-	}
 
-	// Update is called once per frame
-	void Update()
-	{
-
+		bool done = false;
+		while (frontier.Count != 0)
+		{
+			if (done)
+				break;
+			Vector3 current = frontier.Dequeue();
+			List<Vector3> neighbours = hexes[current].GetComponent<Node>().neighbours;
+			foreach (Vector3 neighbour in neighbours)
+			{
+				if (hexes.ContainsKey(neighbour))
+				{
+					int newCost = costSoFar[current] + hexes[neighbour].cost;
+					if ((!costSoFar.ContainsKey(neighbour) || newCost < costSoFar[neighbour]) && newCost < playerHandler.selected.GetComponent<Mech>().moves)
+					{
+						costSoFar[neighbour] = newCost;
+						int priority = newCost;
+						frontier.Enqueue(neighbour, priority);
+						cameFrom[neighbour] = current;
+						hexes[neighbour].GetComponent<MeshRenderer>().material.color = Color.cyan;
+						if (neighbour == dest)
+						{
+							done = true;
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	IEnumerator ExploreFrontier()
@@ -74,37 +108,5 @@ public class Dijkstra : MonoBehaviour
 		}
 
 		Debug.Log("end");
-	}
-
-	public class PriorityQueue<T>
-	{
-		List<KeyValuePair<T, int>> elements = new List<KeyValuePair<T, int>>();
-
-		public int Count
-		{
-			get { return elements.Count; }
-		}
-
-		public void Enqueue(T item, int priority)
-		{
-			elements.Add(new KeyValuePair<T, int>(item, priority));
-		}
-
-		public T Dequeue()
-		{
-			int bestIndex = 0;
-
-			for (int i = 0; i < elements.Count; i++)
-			{
-				if (elements[i].Value < elements[bestIndex].Value)
-				{
-					bestIndex = i;
-				}
-			}
-
-			T bestItem = elements[bestIndex].Key;
-			elements.RemoveAt(bestIndex);
-			return bestItem;
-		}
 	}
 }
