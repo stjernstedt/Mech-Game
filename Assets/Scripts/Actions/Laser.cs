@@ -35,7 +35,7 @@ public class Laser : Action
 
 	public IEnumerator Fire()
 	{
-		float timeVisible = 0.2f;
+		float timeVisible = 0.4f;
 		float timePassed = 0;
 		Vector3 origin = transform.position;
 		origin += new Vector3(0, 0.4f, 0);

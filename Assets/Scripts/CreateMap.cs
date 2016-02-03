@@ -11,9 +11,9 @@ public class CreateMap : MonoBehaviour
 	public Vector2 s = new Vector2(0.5f, 0.5f);
 	public GameObject hexagonPrefab;
 
-	Texture2D noiseTex;
-	Color[] pixels;
-	public float scale = 1f;
+	//Texture2D noiseTex;
+	//Color[] pixels;
+	//public float scale = 1f;
 
 	public Dictionary<Vector3, Node> hexes;
 
@@ -69,27 +69,27 @@ public class CreateMap : MonoBehaviour
 		}
 	}
 
-	void CreateNoise()
-	{
-		float xOrg = Random.Range(0f, 1000f);
-		float yOrg = Random.Range(0f, 1000f);
-		float y = 0f;
-		while (y < noiseTex.height)
-		{
-			float x = 0f;
-			while (x < noiseTex.width)
-			{
-				float xCoord = xOrg + x / noiseTex.width * scale;
-				float yCoord = yOrg + y / noiseTex.height * scale;
-				float sample = Mathf.PerlinNoise(xCoord, yCoord);
-				pixels[(int)y * noiseTex.width + (int)x] = new Color(sample, sample, sample);
-				x++;
-			}
-			y++;
-		}
-		noiseTex.SetPixels(pixels);
-		noiseTex.Apply();
-	}
+	//void CreateNoise()
+	//{
+	//	float xOrg = Random.Range(0f, 1000f);
+	//	float yOrg = Random.Range(0f, 1000f);
+	//	float y = 0f;
+	//	while (y < noiseTex.height)
+	//	{
+	//		float x = 0f;
+	//		while (x < noiseTex.width)
+	//		{
+	//			float xCoord = xOrg + x / noiseTex.width * scale;
+	//			float yCoord = yOrg + y / noiseTex.height * scale;
+	//			float sample = Mathf.PerlinNoise(xCoord, yCoord);
+	//			pixels[(int)y * noiseTex.width + (int)x] = new Color(sample, sample, sample);
+	//			x++;
+	//		}
+	//		y++;
+	//	}
+	//	noiseTex.SetPixels(pixels);
+	//	noiseTex.Apply();
+	//}
 
 }
 

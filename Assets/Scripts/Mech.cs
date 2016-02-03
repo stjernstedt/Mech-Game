@@ -7,16 +7,21 @@ public class Mech : MonoBehaviour
 	public int armor = 5;
 	public int moves = 5;
 	public int movesLeft;
+	public float accuracyLoss = 0;
 
 	PlayerHandler playerHandler;
 	Action[] actions;
+
+	void Awake()
+	{
+		movesLeft = moves;
+	}
 
 	// Use this for initialization
 	void Start()
 	{
 		playerHandler = GameObject.Find("World Data").GetComponent<PlayerHandler>();
 		actions = GetComponents<Action>();
-		movesLeft = moves;
 	}
 
 	// Update is called once per frame
@@ -36,8 +41,18 @@ public class Mech : MonoBehaviour
 		{
 			if (!playerHandler.actionRunning)
 			{
-				playerHandler.SelectUnit(gameObject);
+				playerHandler.SelectUnit(this);
 			}
 		}
+	}
+
+
+	// TODO implement way to calculate accuracy loss on a per-hex basis
+	public float CalculateAccuracyLoss(int movesLeft)
+	{
+		//accuracyLoss = (float)movesLeft / (float)moves;
+
+		float tempAccuracyloss = movesLeft / (float)moves;
+		return tempAccuracyloss;
 	}
 }

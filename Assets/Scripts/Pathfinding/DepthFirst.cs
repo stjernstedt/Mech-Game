@@ -10,7 +10,7 @@ public class DepthFirst : MonoBehaviour
 	public Dictionary<Vector3, Vector3> cameFrom = new Dictionary<Vector3, Vector3>();
 	public Dictionary<Vector3, int> costSoFar = new Dictionary<Vector3, int>();
 
-	Vector3 start = new Vector3(0, 0, 0);
+	//Vector3 start = new Vector3(0, 0, 0);
 
 	//int moved = 0;
 	public int maxMoves = 5;
