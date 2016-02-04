@@ -25,7 +25,8 @@ public class PlayerHandler : MonoBehaviour, IProvider
 	Node oldDest;
 	public float walkSpeed = 0.5f;
 	bool walking = false;
-	public bool actionRunning = false;
+	public Action actionRunning = null;
+	public bool selectingTarget = false;
 
 	//int temp = 0;
 

@@ -31,8 +31,9 @@ public class Laser : Action
 			yield return null;
 		}
 		lineRenderer.enabled = false;
-		running = false;
-		playerHandler.actionRunning = false;
+		//running = false;
+		//playerHandler.actionRunning = false;
+		base.Fire();
 	}
 
 

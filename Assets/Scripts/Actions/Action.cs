@@ -27,10 +27,11 @@ public abstract class Action : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-		if (running)
+		if (playerHandler.selectingTarget && playerHandler.actionRunning == this)
 		{
 			if (Input.GetMouseButtonDown(0))
 			{
+				playerHandler.actionRunning = this;
 				lineRenderer.material.color = Color.green;
 				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 				RaycastHit hit;
@@ -42,17 +43,23 @@ public abstract class Action : MonoBehaviour
 					}
 				}
 				StartCoroutine(Fire());
+				playerHandler.selectingTarget = false;
 			}
 		}
 	}
 
 	public void Execute()
 	{
-		running = true;
-		playerHandler.actionRunning = true;
+		playerHandler.selectingTarget = true;
+		//running = true;
+		playerHandler.actionRunning = this;
 	}
 
-	public abstract IEnumerator Fire();
+	public virtual IEnumerator Fire()
+	{
+		playerHandler.actionRunning = null;
+		return null;
+	}
 
 	public bool CalculateHit()
 	{
