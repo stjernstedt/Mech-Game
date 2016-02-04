@@ -1,0 +1,39 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class Laser : Action
+{
+	public float timeVisible = 0.4f;
+
+	public override IEnumerator Fire()
+	{
+		float timePassed = 0;
+		Vector3 origin = transform.position;
+		origin += new Vector3(0, 0.4f, 0);
+
+		Ray ray = new Ray(origin, target.transform.position + new Vector3(0, 0.4f, 0) - origin);
+		RaycastHit hit;
+		if (Physics.Raycast(ray, out hit, 100f))
+		{
+			if (CalculateHit())
+			{
+				lineRenderer.SetColors(iconColor, iconColor);
+				lineRenderer.SetVertexCount(2);
+				lineRenderer.SetPosition(0, origin);
+				lineRenderer.SetPosition(1, hit.point);
+				lineRenderer.enabled = true;
+			}
+		}
+
+		while (timeVisible > timePassed)
+		{
+			timePassed += Time.deltaTime;
+			yield return null;
+		}
+		lineRenderer.enabled = false;
+		running = false;
+		playerHandler.actionRunning = false;
+	}
+
+
+}

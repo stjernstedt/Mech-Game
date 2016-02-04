@@ -184,7 +184,7 @@ public class PlayerHandler : MonoBehaviour, IProvider
 			int costSoFar = depthFirst.costSoFar[hex];
 			if (costSoFar != 0)
 			{
-				float accuracyLoss = selected.CalculateAccuracyLoss(movesLeft - costSoFar);
+				float accuracyLoss = selected.CalculateAccuracyModifier(movesLeft - costSoFar);
 				if (accuracyLoss < 0.3)
 					hexes[hex].GetComponent<MeshRenderer>().material.color = Color.red;
 				if (accuracyLoss >= 0.3 && accuracyLoss < 0.6)

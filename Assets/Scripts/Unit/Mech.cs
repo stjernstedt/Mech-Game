@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Mech : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class Mech : MonoBehaviour
 	public int moves = 5;
 	public int movesLeft;
 	public float accuracyLoss = 0;
+
+	List<Slot> slots = new List<Slot>();
 
 	PlayerHandler playerHandler;
 	Action[] actions;
@@ -48,11 +51,11 @@ public class Mech : MonoBehaviour
 
 
 	// TODO implement way to calculate accuracy loss on a per-hex basis
-	public float CalculateAccuracyLoss(int movesLeft)
+	public float CalculateAccuracyModifier(int movesLeft)
 	{
 		//accuracyLoss = (float)movesLeft / (float)moves;
 
-		float tempAccuracyloss = movesLeft / (float)moves;
-		return tempAccuracyloss;
+		float tempAccuracyModifier = movesLeft / (float)moves;
+		return tempAccuracyModifier;
 	}
 }
