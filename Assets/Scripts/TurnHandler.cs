@@ -24,6 +24,10 @@ public class TurnHandler : MonoBehaviour
 
 		foreach (Mech unit in playerHandler.units)
 		{
+			if (unit.movesLeft > 0)
+			{
+				notFinishedUnits.Add(unit);
+			}
 		}
 		playerHandler.SelectUnit(notFinishedUnits[0]);
 		Debug.Log("new turn");

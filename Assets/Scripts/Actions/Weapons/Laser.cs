@@ -13,6 +13,7 @@ public class Laser : Action
 
 		Ray ray = new Ray(origin, target.transform.position + new Vector3(0, 0.4f, 0) - origin);
 		RaycastHit hit;
+		bool didHit = false;
 		if (Physics.Raycast(ray, out hit, 100f))
 		{
 			if (CalculateHit())
@@ -22,6 +23,7 @@ public class Laser : Action
 				lineRenderer.SetPosition(0, origin);
 				lineRenderer.SetPosition(1, hit.point);
 				lineRenderer.enabled = true;
+				didHit = true;
 			}
 		}
 
@@ -31,8 +33,12 @@ public class Laser : Action
 			yield return null;
 		}
 		lineRenderer.enabled = false;
-		//running = false;
-		//playerHandler.actionRunning = false;
+
+		if (didHit)
+		{
+			hit.collider.GetComponent<Mech>().Damage(damage);
+		}
+
 		base.Fire();
 	}
 

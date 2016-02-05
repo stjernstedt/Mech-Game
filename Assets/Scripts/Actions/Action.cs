@@ -10,8 +10,6 @@ public abstract class Action : MonoBehaviour
 	public Sprite icon;
 	public Color iconColor;
 
-	//public bool running = false;
-
 	protected PlayerHandler playerHandler;
 	protected LineRenderer lineRenderer;
 	protected Mech unit;
@@ -54,7 +52,6 @@ public abstract class Action : MonoBehaviour
 	public void Execute()
 	{
 		playerHandler.selectingTarget = true;
-		//running = true;
 		playerHandler.actionRunning = this;
 	}
 

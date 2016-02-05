@@ -9,8 +9,6 @@ public class Mech : MonoBehaviour
 	public int moves = 5;
 	public int movesLeft;
 
-	List<Slot> slots = new List<Slot>();
-
 	PlayerHandler playerHandler;
 
 	void Awake()
@@ -27,6 +25,10 @@ public class Mech : MonoBehaviour
 	public void Damage(int damage)
 	{
 		hp -= damage - armor;
+		if (hp < 1)
+		{
+			OnDeath();
+		}
 	}
 
 	public void OnMouseOver()
@@ -49,5 +51,10 @@ public class Mech : MonoBehaviour
 	{
 		Debug.Log("unit reset");
 		movesLeft = moves;
+	}
+
+	void OnDeath()
+	{
+		Destroy(gameObject);
 	}
 }

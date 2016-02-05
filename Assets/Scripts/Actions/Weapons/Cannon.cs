@@ -16,12 +16,13 @@ public class Cannon : Action
 
 		Ray ray = new Ray(origin, target.transform.position + new Vector3(0, 0.4f, 0) - origin);
 		RaycastHit hit;
+		bool didHit = false;
 		if (Physics.Raycast(ray, out hit, 100f))
 		{
 			if (CalculateHit())
 			{
 				smokeTrail.transform.position = origin;
-				//smokeTrail.transform.LookAt(target.transform.position + new Vector3(0, 0.4f, 0));
+				didHit = true;
 			}
 		}
 
@@ -41,8 +42,12 @@ public class Cannon : Action
 			yield return null;
 		}
 		Destroy(smokeTrail.gameObject);
-		//running = false;
-		//playerHandler.actionRunning = false;
+
+		if (didHit)
+		{
+			hit.collider.GetComponent<Mech>().Damage(damage); 
+		}
+
 		base.Fire();
 	}
 }
