@@ -10,7 +10,7 @@ public abstract class Action : MonoBehaviour
 	public Sprite icon;
 	public Color iconColor;
 
-	public bool running = false;
+	//public bool running = false;
 
 	protected PlayerHandler playerHandler;
 	protected LineRenderer lineRenderer;
@@ -19,15 +19,15 @@ public abstract class Action : MonoBehaviour
 	// Use this for initialization
 	public virtual void Start()
 	{
-		playerHandler = GameObject.Find("World Data").GetComponent<PlayerHandler>();
-		lineRenderer = GameObject.Find("World Data").GetComponent<LineRenderer>();
+		playerHandler = GameObject.FindObjectOfType<PlayerHandler>();
+		lineRenderer = GameObject.FindObjectOfType<LineRenderer>();
 		unit = GetComponent<Mech>();
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		if (playerHandler.selectingTarget && playerHandler.actionRunning == this)
+		if (playerHandler.selectingTarget && playerHandler.actionRunning == this && target == null)
 		{
 			if (Input.GetMouseButtonDown(0))
 			{
@@ -42,8 +42,11 @@ public abstract class Action : MonoBehaviour
 						target = hit.collider.gameObject;
 					}
 				}
-				StartCoroutine(Fire());
-				playerHandler.selectingTarget = false;
+				if (target != null)
+				{
+					StartCoroutine(Fire());
+					playerHandler.selectingTarget = false;
+				}
 			}
 		}
 	}
@@ -58,6 +61,7 @@ public abstract class Action : MonoBehaviour
 	public virtual IEnumerator Fire()
 	{
 		playerHandler.actionRunning = null;
+		target = null;
 		return null;
 	}
 

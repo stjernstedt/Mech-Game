@@ -25,8 +25,7 @@ public class Cannon : Action
 			}
 		}
 
-		float randomX = Random.RandomRange(0, 0.2f);
-		float randomY = Random.RandomRange(0, 0.2f);
+		float randomY = Random.Range(0, 0.2f);
 		Vector3 randomV3 = new Vector3(0, randomY, 0);
 
 		while (!smokeTrail.transform.position.Equals(target.transform.position + new Vector3(0, 0.4f, 0) + randomV3))
