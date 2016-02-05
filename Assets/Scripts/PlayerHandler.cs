@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class PlayerHandler : MonoBehaviour, IProvider
+public class PlayerHandler : MonoBehaviour
 {
 	Dictionary<Vector3, Node> hexes;
 	public GameObject playerPrefab;
@@ -15,19 +15,16 @@ public class PlayerHandler : MonoBehaviour, IProvider
 	public Vector3 enemyStartingPos = new Vector3(-2, 11, -9);
 	MouseHandler mouseHandler;
 	TurnHandler turnHandler;
-	//AStar astar;
 	DepthFirst depthFirst;
 
 	Vector3 currentCell;
 	List<Node> path;
-	//Stack<Node> path;
 	Node dest;
 	Node oldDest;
 	public float walkSpeed = 0.5f;
 	bool walking = false;
-	public bool actionRunning = false;
-
-	//int temp = 0;
+	public Action actionRunning = null;
+	public bool selectingTarget = false;
 
 	public GameObject buttonPrefab;
 
@@ -37,8 +34,6 @@ public class PlayerHandler : MonoBehaviour, IProvider
 	public Color shortColor;
 	public Color mediumColor;
 	public Color farColor;
-
-	IList<IObserver> subscribers = new List<IObserver>();
 
 	void Awake()
 	{
@@ -51,7 +46,6 @@ public class PlayerHandler : MonoBehaviour, IProvider
 	// Use this for initialization
 	void Start()
 	{
-		//astar = GameObject.Find("World Data").GetComponent<AStar>();
 		float startingHeight = hexes[startingPos].GetComponent<MeshRenderer>().bounds.max.y;
 		float enemyStartingHeight = hexes[enemyStartingPos].GetComponent<MeshRenderer>().bounds.max.y;
 		player = Instantiate(playerPrefab) as GameObject;
@@ -62,8 +56,8 @@ public class PlayerHandler : MonoBehaviour, IProvider
 		enemy.name = "Enemy";
 		player.transform.position = startingPos + new Vector3(0, startingHeight, 0);
 		enemy.transform.position = hexes[enemyStartingPos].transform.position + new Vector3(0, enemyStartingHeight, 0);
-		//SelectUnit(player.GetComponent<Mech>());
 		turnHandler.NewTurn();
+		EventHandler.DeathOfUnitSubscribers += OnUnitDeath;
 	}
 
 	// Update is called once per frame
@@ -80,35 +74,6 @@ public class PlayerHandler : MonoBehaviour, IProvider
 					StartCoroutine(Walk());
 				}
 			}
-			//if (Input.GetMouseButton(1))
-			//{
-			//	if (!walking)
-			//	{
-			//		oldDest = dest;
-			//		dest = mouseHandler.FindCell();
-			//		if (dest != null && !dest.Equals(oldDest))
-			//		{
-			//			path = astar.CalculatePath(currentCell, dest.coord);
-			//		}
-			//		for (int i = 0; i < path.Count; i++)
-			//		{
-			//			if (i <= shortRange)
-			//				hexes[path[i].coord].GetComponent<MeshRenderer>().material.color = shortColor;
-			//			if (i > shortRange && i <= mediumRange)
-			//				hexes[path[i].coord].GetComponent<MeshRenderer>().material.color = mediumColor;
-			//			if (i > mediumRange)
-			//				hexes[path[i].coord].GetComponent<MeshRenderer>().material.color = farColor;
-			//		}
-			//	}
-			//}
-
-			//if (Input.GetMouseButtonUp(1))
-			//{
-			//	if (!walking && dest != null)
-			//		StartCoroutine(Walk());
-			//	astar.resetPath();
-			//	temp++;
-			//}
 		}
 	}
 
@@ -134,20 +99,9 @@ public class PlayerHandler : MonoBehaviour, IProvider
 			Node node = path[i];
 			float cellHeight = hexes[node.coord].GetComponent<MeshRenderer>().bounds.max.y;
 			selected.transform.position = node.transform.position + new Vector3(0, cellHeight, 0);
-			//if (i > 0)
-			//{
-			//	selected.GetComponent<Mech>().movesLeft -= path[i].cost % path[i  1].cost + 1;
-			//}
 			yield return new WaitForSeconds(walkSpeed);
 		}
 
-		//while (path.Count > 0)
-		//{
-		//	Node node = path.Pop();
-		//	float cellHeight = hexes[node.coord].GetComponent<MeshRenderer>().bounds.max.y;
-		//	selected.transform.position = node.transform.position + new Vector3(0, cellHeight, 0);
-		//	yield return new WaitForSeconds(walkSpeed);
-		//}
 		selected.movesLeft -= depthFirst.costSoFar[path[0].coord];
 		depthFirst.Reset();
 		depthFirst.GetGrid(GetCurrentCell().coord, selected.movesLeft);
@@ -156,7 +110,7 @@ public class PlayerHandler : MonoBehaviour, IProvider
 		walking = false;
 		if (selected.movesLeft < 1)
 		{
-			NotifySubscribers();
+			EventHandler.UnitOutOfMoves(selected);
 		}
 	}
 
@@ -176,15 +130,13 @@ public class PlayerHandler : MonoBehaviour, IProvider
 
 	void ColorGrid()
 	{
-		//int range = selected.GetComponent<Mech>().movesLeft;
 		int movesLeft = selected.movesLeft;
-		int moves = selected.moves;
 		foreach (Vector3 hex in depthFirst.costSoFar.Keys)
 		{
 			int costSoFar = depthFirst.costSoFar[hex];
 			if (costSoFar != 0)
 			{
-				float accuracyLoss = selected.CalculateAccuracyLoss(movesLeft - costSoFar);
+				float accuracyLoss = selected.CalculateAccuracyModifier(movesLeft - costSoFar);
 				if (accuracyLoss < 0.3)
 					hexes[hex].GetComponent<MeshRenderer>().material.color = Color.red;
 				if (accuracyLoss >= 0.3 && accuracyLoss < 0.6)
@@ -192,12 +144,6 @@ public class PlayerHandler : MonoBehaviour, IProvider
 				if (accuracyLoss >= 0.6)
 					hexes[hex].GetComponent<MeshRenderer>().material.color = Color.green;
 			}
-			//if (costSoFar <= movesLeft * 0.4)
-			//	hexes[hex].GetComponent<MeshRenderer>().material.color = Color.green;
-			//if (costSoFar > movesLeft * 0.4 && costSoFar <= movesLeft * 0.8)
-			//	hexes[hex].GetComponent<MeshRenderer>().material.color = Color.yellow;
-			//if (costSoFar > movesLeft * 0.8)
-			//	hexes[hex].GetComponent<MeshRenderer>().material.color = Color.red;
 		}
 	}
 
@@ -219,16 +165,12 @@ public class PlayerHandler : MonoBehaviour, IProvider
 		}
 	}
 
-	public void Subscribe(IObserver o)
+	void OnUnitDeath(Mech unit)
 	{
-		subscribers.Add(o);
-	}
-
-	void NotifySubscribers()
-	{
-		foreach (IObserver subscriber in subscribers)
+		units.Remove(unit);
+		if (units.Count < 2)
 		{
-			subscriber.UnitOutOfMoves(selected);
+			EventHandler.EndGame();
 		}
 	}
 }
