@@ -57,6 +57,7 @@ public class PlayerHandler : MonoBehaviour
 		player.transform.position = startingPos + new Vector3(0, startingHeight, 0);
 		enemy.transform.position = hexes[enemyStartingPos].transform.position + new Vector3(0, enemyStartingHeight, 0);
 		turnHandler.NewTurn();
+		EventHandler.DeathOfUnitSubscribers += OnUnitDeath;
 	}
 
 	// Update is called once per frame
@@ -161,6 +162,15 @@ public class PlayerHandler : MonoBehaviour
 			button.transform.SetParent(panel.transform);
 			button.GetComponent<Image>().sprite = action.icon;
 			button.GetComponent<Image>().color = action.iconColor;
+		}
+	}
+
+	void OnUnitDeath(Mech unit)
+	{
+		units.Remove(unit);
+		if (units.Count < 2)
+		{
+			EventHandler.EndGame();
 		}
 	}
 }

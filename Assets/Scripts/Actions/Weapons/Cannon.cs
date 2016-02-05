@@ -45,7 +45,7 @@ public class Cannon : Action
 
 		if (didHit)
 		{
-			hit.collider.GetComponent<Mech>().Damage(damage); 
+			hit.collider.GetComponent<Mech>().Damage(damage);
 		}
 
 		base.Fire();

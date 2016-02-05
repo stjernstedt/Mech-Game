@@ -13,7 +13,7 @@ public class Mech : MonoBehaviour
 
 	void Awake()
 	{
-		EventHandler.EndTurnSubscribers += OnNewTurn;
+		EventHandler.EndOfTurnSubscribers += OnNewTurn;
 	}
 
 	// Use this for initialization
@@ -55,6 +55,7 @@ public class Mech : MonoBehaviour
 
 	void OnDeath()
 	{
+		EventHandler.UnitDeath(this);
 		Destroy(gameObject);
 	}
 }

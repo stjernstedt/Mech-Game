@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
 public class TurnHandler : MonoBehaviour
 {
+	public Text turnText;
 	List<Mech> notFinishedUnits = new List<Mech>();
 	PlayerHandler playerHandler;
+	int turnNumber = 0;
 
 	void Awake()
 	{
@@ -15,12 +18,17 @@ public class TurnHandler : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		EventHandler.OutOfMovesSubscribers += UnitOutOfMoves;
+		EventHandler.OutOfMovesSubscribers += OnUnitOutOfMoves;
+		EventHandler.EndOfGameSubscribers += OnEndOfGame;
 	}
 
 	public void NewTurn()
 	{
+		turnNumber += 1;
 		EventHandler.EndTurn();
+
+		turnText.text = "Turn " + turnNumber;
+		turnText.gameObject.SetActive(true);
 
 		foreach (Mech unit in playerHandler.units)
 		{
@@ -33,7 +41,7 @@ public class TurnHandler : MonoBehaviour
 		Debug.Log("new turn");
 	}
 
-	public void UnitOutOfMoves(Mech unit)
+	void OnUnitOutOfMoves(Mech unit)
 	{
 		notFinishedUnits.Remove(unit);
 		Debug.Log("unit finished");
@@ -45,5 +53,10 @@ public class TurnHandler : MonoBehaviour
 		{
 			NewTurn();
 		}
+	}
+
+	void OnEndOfGame()
+	{
+		Debug.Log("Game Over!");
 	}
 }
