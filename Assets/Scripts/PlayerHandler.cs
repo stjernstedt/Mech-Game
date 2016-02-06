@@ -35,6 +35,8 @@ public class PlayerHandler : MonoBehaviour
 	public Color mediumColor;
 	public Color farColor;
 
+	public Image heatGauge;
+
 	void Awake()
 	{
 		mouseHandler = GameObject.Find("World Data").GetComponent<MouseHandler>();
@@ -46,7 +48,7 @@ public class PlayerHandler : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		float startingHeight = hexes[startingPos].GetComponent<MeshRenderer>().bounds.max.y;
+		float startingHeight = hexes[startingPos].GetComponent<MeshRenderer>().bounds.max.y + 0.01f;
 		float enemyStartingHeight = hexes[enemyStartingPos].GetComponent<MeshRenderer>().bounds.max.y;
 		player = Instantiate(playerPrefab) as GameObject;
 		enemy = Instantiate(playerPrefab) as GameObject;
@@ -58,6 +60,7 @@ public class PlayerHandler : MonoBehaviour
 		enemy.transform.position = hexes[enemyStartingPos].transform.position + new Vector3(0, enemyStartingHeight, 0);
 		turnHandler.NewTurn();
 		EventHandler.DeathOfUnitSubscribers += OnUnitDeath;
+		EventHandler.ActionTakenSubscribers += OnActionTaken;
 	}
 
 	// Update is called once per frame
@@ -126,6 +129,7 @@ public class PlayerHandler : MonoBehaviour
 		PopulateActionsPanel();
 		depthFirst.GetGrid(GetCurrentCell().coord, selected.movesLeft);
 		ColorGrid();
+		UpdateUI();
 	}
 
 	void ColorGrid()
@@ -172,5 +176,15 @@ public class PlayerHandler : MonoBehaviour
 		{
 			EventHandler.EndGame();
 		}
+	}
+
+	void OnActionTaken(Mech unit)
+	{
+		UpdateUI();
+	}
+
+	void UpdateUI()
+	{
+		heatGauge.fillAmount = selected.heat / 100f;
 	}
 }

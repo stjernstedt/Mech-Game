@@ -6,6 +6,7 @@ public abstract class Action : MonoBehaviour
 	protected GameObject target;
 
 	public int damage = 10;
+	public int heatGenerated = 10;
 
 	public Sprite icon;
 	public Color iconColor;
@@ -59,6 +60,7 @@ public abstract class Action : MonoBehaviour
 	{
 		playerHandler.actionRunning = null;
 		target = null;
+		EventHandler.TakeAction(unit);
 		return null;
 	}
 
@@ -69,8 +71,14 @@ public abstract class Action : MonoBehaviour
 
 		if (diceRoll < 1f * accuracyModifier)
 		{
+			GenerateHeat();
 			return true;
 		}
 		return false;
+	}
+
+	public void GenerateHeat()
+	{
+		unit.heat += heatGenerated;
 	}
 }

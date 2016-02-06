@@ -8,6 +8,8 @@ public class Mech : MonoBehaviour
 	public int armor = 5;
 	public int moves = 5;
 	public int movesLeft;
+	public int heat = 0;
+	public int cooling = 10;
 
 	PlayerHandler playerHandler;
 
@@ -57,5 +59,11 @@ public class Mech : MonoBehaviour
 	{
 		EventHandler.UnitDeath(this);
 		Destroy(gameObject);
+	}
+
+	void DissipateHeat()
+	{
+		heat -= cooling;
+		Mathf.Clamp(heat, 0, 100);
 	}
 }
