@@ -61,6 +61,11 @@ public class Mech : MonoBehaviour
 		Destroy(gameObject);
 	}
 
+	public void GenerateHeat(int heatGenerated)
+	{
+		heat += heatGenerated;
+	}
+
 	void DissipateHeat()
 	{
 		heat -= cooling;

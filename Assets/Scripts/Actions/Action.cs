@@ -71,14 +71,9 @@ public abstract class Action : MonoBehaviour
 
 		if (diceRoll < 1f * accuracyModifier)
 		{
-			GenerateHeat();
+			unit.GenerateHeat(heatGenerated);
 			return true;
 		}
 		return false;
-	}
-
-	public void GenerateHeat()
-	{
-		unit.heat += heatGenerated;
 	}
 }
