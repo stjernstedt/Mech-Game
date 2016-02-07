@@ -9,7 +9,11 @@ public class PlayerHandler : MonoBehaviour
 	public GameObject playerPrefab;
 	GameObject player;
 	GameObject enemy;
-	public List<Mech> units = new List<Mech>();
+	Team blueTeam = new Team();
+	Team redTeam = new Team();
+	public List<Team> teams = new List<Team>();
+	public Team currentTeam;
+	//public List<Mech> units = new List<Mech>();
 	public Mech selected;
 	public Vector3 startingPos = new Vector3(0, 0, 0);
 	public Vector3 enemyStartingPos = new Vector3(-2, 11, -9);
@@ -52,13 +56,18 @@ public class PlayerHandler : MonoBehaviour
 		float enemyStartingHeight = hexes[enemyStartingPos].GetComponent<MeshRenderer>().bounds.max.y;
 		player = Instantiate(playerPrefab) as GameObject;
 		enemy = Instantiate(playerPrefab) as GameObject;
-		units.Add(player.GetComponent<Mech>());
-		units.Add(enemy.GetComponent<Mech>());
+		blueTeam.units.Add(player.GetComponent<Mech>());
+		redTeam.units.Add(enemy.GetComponent<Mech>());
+		teams.Add(blueTeam);
+		teams.Add(redTeam);
+		//units.Add(player.GetComponent<Mech>());
+		//units.Add(enemy.GetComponent<Mech>());
 		player.name = "Player";
 		enemy.name = "Enemy";
 		player.transform.position = startingPos + new Vector3(0, startingHeight, 0);
 		enemy.transform.position = hexes[enemyStartingPos].transform.position + new Vector3(0, enemyStartingHeight, 0);
-		turnHandler.NewTurn();
+		//turnHandler.NewTurn();
+		turnHandler.EndTurn();
 		EventHandler.DeathOfUnitSubscribers += OnUnitDeath;
 		EventHandler.ActionTakenSubscribers += OnActionTaken;
 	}
@@ -111,25 +120,28 @@ public class PlayerHandler : MonoBehaviour
 		ColorGrid();
 		path.Clear();
 		walking = false;
-		if (selected.movesLeft < 1)
-		{
-			EventHandler.UnitOutOfMoves(selected);
-		}
+		//if (selected.movesLeft < 1)
+		//{
+		//	EventHandler.UnitOutOfMoves(selected);
+		//}
 	}
 
 	public void SelectUnit(Mech unit)
 	{
-		if (selected != null)
+		if (currentTeam.units.Contains(unit))
 		{
-			depthFirst.Reset();
-			selected.GetComponent<MeshRenderer>().material.color = Color.white;
+			if (selected != null)
+			{
+				depthFirst.Reset();
+				selected.GetComponent<MeshRenderer>().material.color = Color.white;
+			}
+			selected = unit;
+			selected.GetComponent<MeshRenderer>().material.color = Color.cyan;
+			PopulateActionsPanel();
+			depthFirst.GetGrid(GetCurrentCell().coord, selected.movesLeft);
+			ColorGrid();
+			UpdateUI();
 		}
-		selected = unit;
-		selected.GetComponent<MeshRenderer>().material.color = Color.cyan;
-		PopulateActionsPanel();
-		depthFirst.GetGrid(GetCurrentCell().coord, selected.movesLeft);
-		ColorGrid();
-		UpdateUI();
 	}
 
 	void ColorGrid()
@@ -171,11 +183,23 @@ public class PlayerHandler : MonoBehaviour
 
 	void OnUnitDeath(Mech unit)
 	{
-		units.Remove(unit);
-		if (units.Count < 2)
+		foreach (Team team in teams)
 		{
-			EventHandler.EndGame();
+			if (team.units.Contains(unit))
+			{
+				team.units.Remove(unit);
+			}
+
+			if (team.units.Count < 2)
+			{
+				EventHandler.EndGame();
+			}
 		}
+		//units.Remove(unit);
+		//if (units.Count < 2)
+		//{
+		//	EventHandler.EndGame();
+		//}
 	}
 
 	void OnActionTaken(Mech unit)

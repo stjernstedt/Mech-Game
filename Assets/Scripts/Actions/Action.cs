@@ -72,8 +72,10 @@ public abstract class Action : MonoBehaviour
 		if (diceRoll < 1f * accuracyModifier)
 		{
 			unit.GenerateHeat(heatGenerated);
+			Debug.Log("hit");
 			return true;
 		}
+		Debug.Log("miss");
 		return false;
 	}
 }

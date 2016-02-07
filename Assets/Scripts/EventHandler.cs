@@ -18,6 +18,9 @@ public class EventHandler : MonoBehaviour
 	public delegate void ActionTaken(Mech unit);
 	public static event ActionTaken ActionTakenSubscribers;
 
+	public delegate void TeamTurnEnded(Team team);
+	public static event TeamTurnEnded TeamTurnEndedSubscribers;
+
 	public static void EndTurn()
 	{
 		EndOfTurnSubscribers();
@@ -41,5 +44,10 @@ public class EventHandler : MonoBehaviour
 	public static void TakeAction(Mech unit)
 	{
 		ActionTakenSubscribers(unit);
+	}
+
+	public static void TeamEndTurn(Team team)
+	{
+		TeamTurnEndedSubscribers(team);
 	}
 }

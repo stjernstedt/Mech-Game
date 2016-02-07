@@ -7,6 +7,7 @@ public class TurnHandler : MonoBehaviour
 {
 	public Text turnText;
 	List<Mech> notFinishedUnits = new List<Mech>();
+	List<Team> notFinishedTeams = new List<Team>();
 	PlayerHandler playerHandler;
 	int turnNumber = 0;
 
@@ -25,20 +26,44 @@ public class TurnHandler : MonoBehaviour
 	public void NewTurn()
 	{
 		turnNumber += 1;
-		EventHandler.EndTurn();
 
 		turnText.text = "Turn " + turnNumber;
 		turnText.gameObject.SetActive(true);
 
-		foreach (Mech unit in playerHandler.units)
+		foreach (Team team in playerHandler.teams)
 		{
-			if (unit.movesLeft > 0)
-			{
-				notFinishedUnits.Add(unit);
-			}
+			notFinishedTeams.Add(team);
 		}
-		playerHandler.SelectUnit(notFinishedUnits[0]);
+		playerHandler.currentTeam = notFinishedTeams[0];
+		playerHandler.SelectUnit(playerHandler.currentTeam.units[0]);
+		//foreach (Mech unit in playerHandler.units)
+		//{
+		//	if (unit.movesLeft > 0)
+		//	{
+		//		notFinishedUnits.Add(unit);
+		//	}
+		//}
+		//playerHandler.SelectUnit(notFinishedUnits[0]);
 		Debug.Log("new turn");
+	}
+
+	public void EndTurn()
+	{
+		if (playerHandler.currentTeam != null)
+		{
+			notFinishedTeams.Remove(playerHandler.currentTeam);
+		}
+
+		if (notFinishedTeams.Count < 1)
+		{
+			EventHandler.EndTurn();
+			NewTurn();
+		}
+		else
+		{
+			playerHandler.currentTeam = notFinishedTeams[0];
+			playerHandler.SelectUnit(playerHandler.currentTeam.units[0]);
+		}
 	}
 
 	void OnUnitOutOfMoves(Mech unit)
@@ -57,6 +82,8 @@ public class TurnHandler : MonoBehaviour
 
 	void OnEndOfGame()
 	{
+		turnText.text = "GAME OVER";
+		turnText.gameObject.SetActive(true);
 		Debug.Log("Game Over!");
 	}
 }
