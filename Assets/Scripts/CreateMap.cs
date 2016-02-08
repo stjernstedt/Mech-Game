@@ -23,7 +23,6 @@ public class CreateMap : MonoBehaviour
 		//noiseTex = new Texture2D(width, height);
 		//pixels = new Color[noiseTex.width * noiseTex.height];
 		//CreateNoise();
-
 		hexes = new Dictionary<Vector3, Node>();
 		layout = new Layout(Layout.pointy, s, new Vector3(0, 0, 0));
 

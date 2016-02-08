@@ -43,6 +43,7 @@ public class Cannon : Action
 		}
 		Destroy(smokeTrail.gameObject);
 
+		// BUG trying to get mech component even if hitting terrain
 		if (didHit)
 		{
 			hit.collider.GetComponent<Mech>().Damage(damage);

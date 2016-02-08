@@ -34,7 +34,7 @@ public class BreadthFirst : MonoBehaviour
 	{
 		bool done = false;
 
-		frontier.Enqueue(playerHandler.GetCurrentCell().coord);
+		frontier.Enqueue(playerHandler.selected.GetCurrentCell().coord);
 		while (frontier.Count > 0 && !done)
 		{
 			Vector3 current = frontier.Dequeue();

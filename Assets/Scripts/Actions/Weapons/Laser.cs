@@ -34,6 +34,7 @@ public class Laser : Action
 		}
 		lineRenderer.enabled = false;
 
+		// BUG trying to get mech component even if hitting terrain
 		if (didHit)
 		{
 			hit.collider.GetComponent<Mech>().Damage(damage);

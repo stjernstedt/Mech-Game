@@ -3,7 +3,7 @@ using System.Collections;
 
 public abstract class Action : MonoBehaviour
 {
-	protected GameObject target;
+	protected Mech target;
 
 	public int damage = 10;
 	public int heatGenerated = 10;
@@ -18,7 +18,7 @@ public abstract class Action : MonoBehaviour
 	// Use this for initialization
 	public virtual void Start()
 	{
-		playerHandler = GameObject.FindObjectOfType<PlayerHandler>();
+		playerHandler = GameObject.Find("World Data").GetComponent<PlayerHandler>();
 		lineRenderer = GameObject.FindObjectOfType<LineRenderer>();
 		unit = GetComponent<Mech>();
 	}
@@ -38,7 +38,7 @@ public abstract class Action : MonoBehaviour
 				{
 					if (hit.collider.GetComponent<Mech>() != null)
 					{
-						target = hit.collider.gameObject;
+						target = hit.collider.GetComponent<Mech>();
 					}
 				}
 				if (target != null)
@@ -60,16 +60,18 @@ public abstract class Action : MonoBehaviour
 	{
 		playerHandler.actionRunning = null;
 		target = null;
-		EventHandler.TakeAction(unit);
+		EventHandler.ActionTaken(unit);
 		return null;
 	}
 
 	public bool CalculateHit()
 	{
 		float diceRoll = Random.Range(0f, 1f);
-		float accuracyModifier = unit.CalculateAccuracyModifier(unit.movesLeft);
+		float accuracy = unit.CalculateAccuracy(unit.movesLeft, target);
 
-		if (diceRoll < 1f * accuracyModifier)
+		Debug.Log("dice: " + diceRoll);
+
+		if (diceRoll < accuracy)
 		{
 			GenerateHeat();
 			return true;

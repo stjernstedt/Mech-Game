@@ -9,23 +9,25 @@ public class TurnHandler : MonoBehaviour
 	List<Mech> notFinishedUnits = new List<Mech>();
 	PlayerHandler playerHandler;
 	int turnNumber = 0;
+	public bool AIRunning = false;
 
 	void Awake()
 	{
-		playerHandler = GameObject.Find("World Data").GetComponent<PlayerHandler>();
+		playerHandler = GetComponent<PlayerHandler>();
 	}
 
 	// Use this for initialization
 	void Start()
 	{
 		EventHandler.OutOfMovesSubscribers += OnUnitOutOfMoves;
-		EventHandler.EndOfGameSubscribers += OnEndOfGame;
+		EventHandler.EndGameSubscribers += OnEndOfGame;
+		EventHandler.AIDoneSubscribers += NewTurn;
 	}
 
 	public void NewTurn()
 	{
 		turnNumber += 1;
-		EventHandler.EndTurn();
+		EventHandler.NewTurn();
 
 		turnText.text = "Turn " + turnNumber;
 		turnText.gameObject.SetActive(true);
@@ -41,10 +43,16 @@ public class TurnHandler : MonoBehaviour
 		Debug.Log("new turn");
 	}
 
+	public void EndTurn()
+	{
+		GetComponent<AI>().RunAI();
+		// waits for callback from AI
+		//NewTurn();
+	}
+
 	void OnUnitOutOfMoves(Mech unit)
 	{
 		notFinishedUnits.Remove(unit);
-		Debug.Log("unit finished");
 		if (notFinishedUnits.Count > 0)
 		{
 			playerHandler.SelectUnit(notFinishedUnits[0]);

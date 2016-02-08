@@ -3,43 +3,51 @@ using System.Collections;
 
 public class EventHandler : MonoBehaviour
 {
-	public delegate void EndOfTurn();
-	public static event EndOfTurn EndOfTurnSubscribers;
+	public delegate void NewTurnDelegate();
+	public static event NewTurnDelegate NewTurnSubscribers;
 
-	public delegate void EndOfGame();
-	public static event EndOfGame EndOfGameSubscribers;
+	public delegate void EndGameDelegate();
+	public static event EndGameDelegate EndGameSubscribers;
 
-	public delegate void OutOfMoves(Mech unit);
-	public static event OutOfMoves OutOfMovesSubscribers;
+	public delegate void OutOfMovesDelegate(Mech unit);
+	public static event OutOfMovesDelegate OutOfMovesSubscribers;
 
-	public delegate void DeathOfUnit(Mech unit);
-	public static event DeathOfUnit DeathOfUnitSubscribers;
+	public delegate void UnitDeathDelegate(Mech unit);
+	public static event UnitDeathDelegate UnitDeathSubscribers;
 
-	public delegate void ActionTaken(Mech unit);
-	public static event ActionTaken ActionTakenSubscribers;
+	public delegate void ActionTakenDelegate(Mech unit);
+	public static event ActionTakenDelegate ActionTakenSubscribers;
 
-	public static void EndTurn()
+	public delegate void AIDoneDelegate();
+	public static event AIDoneDelegate AIDoneSubscribers;
+
+	public static void NewTurn()
 	{
-		EndOfTurnSubscribers();
+		NewTurnSubscribers();
 	}
 
 	public static void EndGame()
 	{
-		EndOfGameSubscribers();
+		EndGameSubscribers();
 	}
 
-	public static void UnitOutOfMoves(Mech unit)
+	public static void OutOfMoves(Mech unit)
 	{
 		OutOfMovesSubscribers(unit);
 	}
 
 	public static void UnitDeath(Mech unit)
 	{
-		DeathOfUnitSubscribers(unit);
+		UnitDeathSubscribers(unit);
 	}
 
-	public static void TakeAction(Mech unit)
+	public static void ActionTaken(Mech unit)
 	{
 		ActionTakenSubscribers(unit);
+	}
+
+	public static void AIDone()
+	{
+		AIDoneSubscribers();
 	}
 }

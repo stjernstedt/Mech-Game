@@ -10,9 +10,6 @@ public class DepthFirst : MonoBehaviour
 	public Dictionary<Vector3, Vector3> cameFrom = new Dictionary<Vector3, Vector3>();
 	public Dictionary<Vector3, int> costSoFar = new Dictionary<Vector3, int>();
 
-	//Vector3 start = new Vector3(0, 0, 0);
-
-	//int moved = 0;
 	public int maxMoves = 5;
 
 	// Use this for initialization
@@ -25,13 +22,11 @@ public class DepthFirst : MonoBehaviour
 	{
 		cameFrom[start] = start;
 		costSoFar[start] = 0;
-		//moved = 0;
 		GoDeeper(start, range);
 	}
 
 	void GoDeeper(Vector3 currentCell, int range)
 	{
-		//moved += 1;
 		foreach (Vector3 neighbour in hexes[currentCell].neighbours)
 		{
 			if (hexes.ContainsKey(neighbour))
@@ -50,24 +45,12 @@ public class DepthFirst : MonoBehaviour
 
 							GoDeeper(neighbour, range);
 						}
-						//ColorHex(neighbour);
 					}
 				}
 			}
 		}
-		//moved -= 1;
 
 	}
-
-	//void ColorHex(Vector3 hex)
-	//{
-	//	if (costSoFar[hex] <= 2)
-	//		hexes[hex].GetComponent<MeshRenderer>().material.color = Color.green;
-	//	if (costSoFar[hex] > 2 && costSoFar[hex] <= 4)
-	//		hexes[hex].GetComponent<MeshRenderer>().material.color = Color.yellow;
-	//	if (costSoFar[hex] > 4 && costSoFar[hex] <= 5)
-	//		hexes[hex].GetComponent<MeshRenderer>().material.color = Color.red;
-	//}
 
 	public void Reset()
 	{
@@ -95,12 +78,6 @@ public class DepthFirst : MonoBehaviour
 			path.Add(hexes[cameFrom[current]]);
 			current = cameFrom[current];
 		}
-
-		//while (pathStack.Count > 0)
-		//{
-		//	path.Add(pathStack.Pop());
-		//}
-
 
 		return path;
 	}

@@ -10,6 +10,7 @@ public class PlayerHandler : MonoBehaviour
 	GameObject player;
 	GameObject enemy;
 	public List<Mech> units = new List<Mech>();
+	public List<Mech> aiUnits = new List<Mech>();
 	public Mech selected;
 	public Vector3 startingPos = new Vector3(0, 0, 0);
 	public Vector3 enemyStartingPos = new Vector3(-2, 11, -9);
@@ -21,7 +22,6 @@ public class PlayerHandler : MonoBehaviour
 	List<Node> path;
 	Node dest;
 	Node oldDest;
-	public float walkSpeed = 0.5f;
 	bool walking = false;
 	public Action actionRunning = null;
 	public bool selectingTarget = false;
@@ -39,10 +39,10 @@ public class PlayerHandler : MonoBehaviour
 
 	void Awake()
 	{
-		mouseHandler = GameObject.Find("World Data").GetComponent<MouseHandler>();
-		turnHandler = GameObject.Find("World Data").GetComponent<TurnHandler>();
-		depthFirst = GameObject.Find("World Data").GetComponent<DepthFirst>();
-		hexes = GameObject.Find("World Data").GetComponent<CreateMap>().hexes;
+		turnHandler = GetComponent<TurnHandler>();
+		depthFirst = GetComponent<DepthFirst>();
+		mouseHandler = GetComponent<MouseHandler>();
+		hexes = GetComponent<CreateMap>().hexes;
 	}
 
 	// Use this for initialization
@@ -53,13 +53,14 @@ public class PlayerHandler : MonoBehaviour
 		player = Instantiate(playerPrefab) as GameObject;
 		enemy = Instantiate(playerPrefab) as GameObject;
 		units.Add(player.GetComponent<Mech>());
-		units.Add(enemy.GetComponent<Mech>());
+		aiUnits.Add(enemy.GetComponent<Mech>());
 		player.name = "Player";
 		enemy.name = "Enemy";
 		player.transform.position = startingPos + new Vector3(0, startingHeight, 0);
 		enemy.transform.position = hexes[enemyStartingPos].transform.position + new Vector3(0, enemyStartingHeight, 0);
+		Debug.Log(turnHandler);
 		turnHandler.NewTurn();
-		EventHandler.DeathOfUnitSubscribers += OnUnitDeath;
+		EventHandler.UnitDeathSubscribers += OnUnitDeath;
 		EventHandler.ActionTakenSubscribers += OnActionTaken;
 	}
 
@@ -70,53 +71,17 @@ public class PlayerHandler : MonoBehaviour
 		{
 			if (Input.GetMouseButtonDown(1))
 			{
-				if (!walking)
+				if (!selected.walking)
 				{
-					currentCell = GetCurrentCell().coord;
+					currentCell = selected.GetCurrentCell().coord;
 					path = depthFirst.GetPath(currentCell, mouseHandler.FindCell().coord);
-					StartCoroutine(Walk());
+					StartCoroutine(selected.Walk(path));
 				}
 			}
 		}
 	}
 
-	public Node GetCurrentCell()
-	{
-		Node node = null;
-		Ray ray = new Ray(selected.transform.position, new Vector3(0, -1, 0));
-		RaycastHit hit;
-		if (Physics.Raycast(ray, out hit, 100f))
-		{
-			node = hit.collider.GetComponent<Node>();
-		}
-
-		return node;
-	}
-
-	IEnumerator Walk()
-	{
-		walking = true;
-
-		for (int i = path.Count - 1; i >= 0; i--)
-		{
-			Node node = path[i];
-			float cellHeight = hexes[node.coord].GetComponent<MeshRenderer>().bounds.max.y;
-			selected.transform.position = node.transform.position + new Vector3(0, cellHeight, 0);
-			yield return new WaitForSeconds(walkSpeed);
-		}
-
-		selected.movesLeft -= depthFirst.costSoFar[path[0].coord];
-		depthFirst.Reset();
-		depthFirst.GetGrid(GetCurrentCell().coord, selected.movesLeft);
-		ColorGrid();
-		path.Clear();
-		walking = false;
-		if (selected.movesLeft < 1)
-		{
-			EventHandler.UnitOutOfMoves(selected);
-		}
-	}
-
+	// selects a unit and displays it's movement grid
 	public void SelectUnit(Mech unit)
 	{
 		if (selected != null)
@@ -127,12 +92,12 @@ public class PlayerHandler : MonoBehaviour
 		selected = unit;
 		selected.GetComponent<MeshRenderer>().material.color = Color.cyan;
 		PopulateActionsPanel();
-		depthFirst.GetGrid(GetCurrentCell().coord, selected.movesLeft);
+		depthFirst.GetGrid(selected.GetCurrentCell().coord, selected.movesLeft);
 		ColorGrid();
 		UpdateUI();
 	}
 
-	void ColorGrid()
+	public void ColorGrid()
 	{
 		int movesLeft = selected.movesLeft;
 		foreach (Vector3 hex in depthFirst.costSoFar.Keys)
@@ -140,13 +105,14 @@ public class PlayerHandler : MonoBehaviour
 			int costSoFar = depthFirst.costSoFar[hex];
 			if (costSoFar != 0)
 			{
-				float accuracyLoss = selected.CalculateAccuracyModifier(movesLeft - costSoFar);
-				if (accuracyLoss < 0.3)
-					hexes[hex].GetComponent<MeshRenderer>().material.color = Color.red;
-				if (accuracyLoss >= 0.3 && accuracyLoss < 0.6)
-					hexes[hex].GetComponent<MeshRenderer>().material.color = Color.yellow;
-				if (accuracyLoss >= 0.6)
-					hexes[hex].GetComponent<MeshRenderer>().material.color = Color.green;
+				hexes[hex].GetComponent<MeshRenderer>().material.color = Color.cyan;
+				//float accuracy = selected.CalculateAccuracy(movesLeft - costSoFar, null);
+				//if (accuracy < 0.3)
+				//	hexes[hex].GetComponent<MeshRenderer>().material.color = Color.red;
+				//if (accuracy >= 0.3 && accuracy < 0.6)
+				//	hexes[hex].GetComponent<MeshRenderer>().material.color = Color.yellow;
+				//if (accuracy >= 0.6)
+				//	hexes[hex].GetComponent<MeshRenderer>().material.color = Color.green;
 			}
 		}
 	}

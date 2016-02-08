@@ -30,7 +30,7 @@ public class Dijkstra : MonoBehaviour
 
 	public void GetGrid()
 	{
-		start = playerHandler.GetCurrentCell().coord;
+		start = playerHandler.selected.GetCurrentCell().coord;
 		frontier.Enqueue(start, 0);
 		cameFrom[start] = start;
 		costSoFar[start] = 0;
