@@ -37,9 +37,6 @@ public class AI : MonoBehaviour
 		GetCandidates();
 		int canditateNumber = Random.Range(0, candidates.Count - 1);
 		List<Node> path = depthFirst.GetPath(playerHandler.selected.GetCurrentCell().coord, candidates[canditateNumber]);
-		Debug.Log("candidates: " + candidates.Count);
-		Debug.Log("candidate number: " + canditateNumber);
-		Debug.Log("path count: " + path.Count);
 		StartCoroutine(playerHandler.selected.Walk(path));
 		candidates.Clear();
 	}
@@ -53,6 +50,7 @@ public class AI : MonoBehaviour
 		// if current cell accuracy is good enough, tries to fire
 		if (currentCellAccuracy >= tolerableAccuracy)
 		{
+			Attack();
 			candidates.Add(playerHandler.selected.GetCurrentCell().coord);
 			return;
 		}
@@ -67,5 +65,13 @@ public class AI : MonoBehaviour
 				candidates.Add(hex.Key);
 			}
 		}
+	}
+
+	void Attack()
+	{
+		Action[] actions = GetComponents<Action>();
+		int chooseAction = Random.Range(0, actions.Length);
+		actions[chooseAction].target = target;
+		StartCoroutine(actions[chooseAction].Fire());
 	}
 }

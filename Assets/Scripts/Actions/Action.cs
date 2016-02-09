@@ -3,7 +3,7 @@ using System.Collections;
 
 public abstract class Action : MonoBehaviour
 {
-	protected Mech target;
+	public Mech target;
 
 	public int damage = 10;
 	public int heatGenerated = 10;
@@ -58,6 +58,7 @@ public abstract class Action : MonoBehaviour
 
 	public virtual IEnumerator Fire()
 	{
+		Debug.Log("fired");
 		playerHandler.actionRunning = null;
 		target = null;
 		EventHandler.ActionTaken(unit);

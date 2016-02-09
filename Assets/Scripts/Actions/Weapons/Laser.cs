@@ -11,6 +11,8 @@ public class Laser : Action
 		Vector3 origin = transform.position;
 		origin += new Vector3(0, 0.4f, 0);
 
+		Debug.Log(target);
+		Debug.Log(target.transform.position);
 		Ray ray = new Ray(origin, target.transform.position + new Vector3(0, 0.4f, 0) - origin);
 		RaycastHit hit;
 		bool didHit = false;

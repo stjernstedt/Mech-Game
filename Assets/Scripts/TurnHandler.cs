@@ -45,7 +45,8 @@ public class TurnHandler : MonoBehaviour
 
 	public void EndTurn()
 	{
-		GetComponent<AI>().RunAI();
+		playerHandler.SelectUnit(playerHandler.aiUnits[0]);
+		playerHandler.selected.GetComponent<AI>().RunAI();
 		// waits for callback from AI
 		//NewTurn();
 	}

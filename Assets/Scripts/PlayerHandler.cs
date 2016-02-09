@@ -7,6 +7,7 @@ public class PlayerHandler : MonoBehaviour
 {
 	Dictionary<Vector3, Node> hexes;
 	public GameObject playerPrefab;
+	public GameObject AIPrefab;
 	GameObject player;
 	GameObject enemy;
 	public List<Mech> units = new List<Mech>();
@@ -51,7 +52,7 @@ public class PlayerHandler : MonoBehaviour
 		float startingHeight = hexes[startingPos].GetComponent<MeshRenderer>().bounds.max.y + 0.01f;
 		float enemyStartingHeight = hexes[enemyStartingPos].GetComponent<MeshRenderer>().bounds.max.y;
 		player = Instantiate(playerPrefab) as GameObject;
-		enemy = Instantiate(playerPrefab) as GameObject;
+		enemy = Instantiate(AIPrefab) as GameObject;
 		units.Add(player.GetComponent<Mech>());
 		aiUnits.Add(enemy.GetComponent<Mech>());
 		player.name = "Player";
