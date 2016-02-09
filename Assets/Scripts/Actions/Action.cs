@@ -67,9 +67,7 @@ public abstract class Action : MonoBehaviour
 	public bool CalculateHit()
 	{
 		float diceRoll = Random.Range(0f, 1f);
-		float accuracy = unit.CalculateAccuracy(unit.movesLeft, target);
-
-		Debug.Log("dice: " + diceRoll);
+		float accuracy = unit.CalculateAccuracy(unit.GetCurrentCell().coord, target);
 
 		if (diceRoll < accuracy)
 		{

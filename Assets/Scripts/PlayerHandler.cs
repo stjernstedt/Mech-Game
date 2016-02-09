@@ -58,7 +58,6 @@ public class PlayerHandler : MonoBehaviour
 		enemy.name = "Enemy";
 		player.transform.position = startingPos + new Vector3(0, startingHeight, 0);
 		enemy.transform.position = hexes[enemyStartingPos].transform.position + new Vector3(0, enemyStartingHeight, 0);
-		Debug.Log(turnHandler);
 		turnHandler.NewTurn();
 		EventHandler.UnitDeathSubscribers += OnUnitDeath;
 		EventHandler.ActionTakenSubscribers += OnActionTaken;

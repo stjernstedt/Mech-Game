@@ -55,10 +55,11 @@ public class Mech : MonoBehaviour
 	}
 
 	// returns accuracy
-	public float CalculateAccuracy(int movesLeft, Mech target)
+	public float CalculateAccuracy(Vector3 fromHex, Mech target)
 	{
-		float movementPenalty = (Mathf.Abs((float)movesLeft - (float)moves)) * 2f;
-		float distancePenalty = DistanceToTarget(target.GetCurrentCell().coord) * 5f;
+		int calculatedMovesLeft = movesLeft - depthFirst.costSoFar[fromHex];
+		float movementPenalty = (moves - calculatedMovesLeft) * 2f;
+		float distancePenalty = DistanceToTarget(fromHex, target.GetCurrentCell().coord) * 5f;
 		float accuracy = baseAccuracy - movementPenalty - distancePenalty;
 
 		//Debug.Log("movepen: " + movementPenalty);
@@ -68,9 +69,8 @@ public class Mech : MonoBehaviour
 		return accuracy;
 	}
 
-	int DistanceToTarget(Vector3 destination)
+	int DistanceToTarget(Vector3 origin, Vector3 destination)
 	{
-		Vector3 origin = GetCurrentCell().coord;
 		int x = (int)Mathf.Abs(destination.x - origin.x);
 		int y = (int)Mathf.Abs(destination.y - origin.y);
 		int z = (int)Mathf.Abs(destination.z - origin.z);
@@ -93,36 +93,35 @@ public class Mech : MonoBehaviour
 
 	public IEnumerator Walk(List<Node> path)
 	{
-			walking = true;
+		walking = true;
 
-			for (int i = path.Count - 1; i >= 0; i--)
-			{
-				Node node = path[i];
-				float cellHeight = hexes[node.coord].GetComponent<MeshRenderer>().bounds.max.y;
-				transform.position = node.transform.position + new Vector3(0, cellHeight, 0);
-				yield return new WaitForSeconds(waitBetweenWalk);
-			}
+		for (int i = path.Count - 1; i >= 0; i--)
+		{
+			Node node = path[i];
+			float cellHeight = hexes[node.coord].GetComponent<MeshRenderer>().bounds.max.y;
+			transform.position = node.transform.position + new Vector3(0, cellHeight, 0);
+			yield return new WaitForSeconds(waitBetweenWalk);
+		}
 
-			movesLeft -= depthFirst.costSoFar[path[0].coord];
-			depthFirst.Reset();
-			depthFirst.GetGrid(GetCurrentCell().coord, movesLeft);
-			playerHandler.ColorGrid();
-			path.Clear();
-			walking = false;
-			if (movesLeft < 1)
-			{
-				//EventHandler.OutOfMoves(selected);
-			}
-			if (turnHandler.AIRunning)
-			{
-				EventHandler.AIDone();
-				turnHandler.AIRunning = false;
-			}
+		movesLeft -= depthFirst.costSoFar[path[0].coord];
+		depthFirst.Reset();
+		depthFirst.GetGrid(GetCurrentCell().coord, movesLeft);
+		playerHandler.ColorGrid();
+		path.Clear();
+		walking = false;
+		if (movesLeft < 1)
+		{
+			//EventHandler.OutOfMoves(selected);
+		}
+		if (turnHandler.AIRunning)
+		{
+			EventHandler.AIDone();
+			turnHandler.AIRunning = false;
+		}
 	}
 
 	void OnNewTurn()
 	{
-		Debug.Log("unit reset");
 		movesLeft = moves;
 	}
 

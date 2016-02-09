@@ -35,10 +35,10 @@ public class AI : MonoBehaviour
 		turnHandler.AIRunning = true;
 		playerHandler.SelectUnit(playerHandler.aiUnits[0]);
 		GetCandidates();
-		Debug.Log("candidates: " + candidates.Count);
 		int canditateNumber = Random.Range(0, candidates.Count - 1);
-		Debug.Log("candidate number: " + canditateNumber);
 		List<Node> path = depthFirst.GetPath(playerHandler.selected.GetCurrentCell().coord, candidates[canditateNumber]);
+		Debug.Log("candidates: " + candidates.Count);
+		Debug.Log("candidate number: " + canditateNumber);
 		Debug.Log("path count: " + path.Count);
 		StartCoroutine(playerHandler.selected.Walk(path));
 		candidates.Clear();
@@ -48,21 +48,24 @@ public class AI : MonoBehaviour
 	{
 		depthFirst.GetGrid(playerHandler.selected.GetCurrentCell().coord, playerHandler.selected.movesLeft);
 
-		if (playerHandler.selected.CalculateAccuracy(playerHandler.selected.movesLeft, target) >= tolerableAccuracy)
+		float currentCellAccuracy = playerHandler.selected.CalculateAccuracy(playerHandler.selected.GetCurrentCell().coord, target);
+
+		// if current cell accuracy is good enough, tries to fire
+		if (currentCellAccuracy >= tolerableAccuracy)
 		{
 			candidates.Add(playerHandler.selected.GetCurrentCell().coord);
-			Debug.Log("can fire!");
 			return;
 		}
 
+		// checks all walkable cells if they have better accuracy than current cell, then adds them as candidates
 		foreach (var hex in depthFirst.costSoFar)
 		{
 			int costSoFar = hex.Value;
-			if (playerHandler.selected.CalculateAccuracy(playerHandler.selected.movesLeft - costSoFar, target) >= tolerableAccuracy)
+			float checkAccuracy = playerHandler.selected.CalculateAccuracy(hex.Key, target);
+			if (checkAccuracy >= currentCellAccuracy)
 			{
 				candidates.Add(hex.Key);
 			}
 		}
-		// TODO change mode from fire to move if no candidate is within tolerable accuracy
 	}
 }
