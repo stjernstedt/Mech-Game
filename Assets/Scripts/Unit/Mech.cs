@@ -54,7 +54,7 @@ public class Mech : MonoBehaviour
 		}
 	}
 
-	// returns accuracy
+	// returns accuracy based on distance to target and how far the unit has moved
 	public float CalculateAccuracy(Vector3 fromHex, Mech target)
 	{
 		int calculatedMovesLeft = movesLeft - depthFirst.costSoFar[fromHex];
@@ -76,6 +76,35 @@ public class Mech : MonoBehaviour
 		int z = (int)Mathf.Abs(destination.z - origin.z);
 
 		return Mathf.Max(x, y, z);
+	}
+
+	public bool CanSeeTarget(Mech target)
+	{
+		Vector3 origin = transform.position;
+		origin += new Vector3(0, 0.4f, 0);
+
+		Ray ray = new Ray(origin, target.transform.position + new Vector3(0, 0.4f, 0) - origin);
+		RaycastHit hit;
+		if (Physics.Raycast(ray, out hit, 100f))
+		{
+			if (hit.collider.GetComponent<Mech>() == target)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public RaycastHit RaycastToTarget(Mech target)
+	{
+		Vector3 origin = transform.position;
+		origin += new Vector3(0, 0.4f, 0);
+
+		Ray ray = new Ray(origin, target.transform.position + new Vector3(0, 0.4f, 0) - origin);
+		RaycastHit hit;
+		Physics.Raycast(ray, out hit, 100f);
+
+		return hit;
 	}
 
 	public Node GetCurrentCell()

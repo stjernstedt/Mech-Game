@@ -14,16 +14,11 @@ public class Cannon : Action
 		float startTime = Time.time;
 		float pathLength = Vector3.Distance(origin, target.transform.position + new Vector3(0, 0.4f, 0));
 
-		Ray ray = new Ray(origin, target.transform.position + new Vector3(0, 0.4f, 0) - origin);
-		RaycastHit hit;
 		bool didHit = false;
-		if (Physics.Raycast(ray, out hit, 100f))
+		if (CalculateHit())
 		{
-			if (CalculateHit())
-			{
-				smokeTrail.transform.position = origin;
-				didHit = true;
-			}
+			smokeTrail.transform.position = origin;
+			didHit = true;
 		}
 
 		float randomY = Random.Range(0, 0.2f);
@@ -46,7 +41,7 @@ public class Cannon : Action
 		// BUG trying to get mech component even if hitting terrain
 		if (didHit)
 		{
-			hit.collider.GetComponent<Mech>().Damage(damage);
+			target.Damage(damage);
 		}
 
 		base.Fire();

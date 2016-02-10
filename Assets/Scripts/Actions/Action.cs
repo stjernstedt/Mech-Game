@@ -43,8 +43,15 @@ public abstract class Action : MonoBehaviour
 				}
 				if (target != null)
 				{
-					StartCoroutine(Fire());
-					playerHandler.selectingTarget = false;
+					if (unit.CanSeeTarget(target))
+					{
+						StartCoroutine(Fire());
+						playerHandler.selectingTarget = false;
+					}
+					else
+					{
+						Debug.Log("can't see target!");
+					}
 				}
 			}
 		}

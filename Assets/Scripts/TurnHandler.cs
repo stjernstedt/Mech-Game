@@ -66,6 +66,7 @@ public class TurnHandler : MonoBehaviour
 
 	void OnEndOfGame()
 	{
-		Debug.Log("Game Over!");
+		turnText.text = "GAME OVER";
+		turnText.gameObject.SetActive(true);
 	}
 }

@@ -11,22 +11,16 @@ public class Laser : Action
 		Vector3 origin = transform.position;
 		origin += new Vector3(0, 0.4f, 0);
 
-		Debug.Log(target);
-		Debug.Log(target.transform.position);
-		Ray ray = new Ray(origin, target.transform.position + new Vector3(0, 0.4f, 0) - origin);
-		RaycastHit hit;
 		bool didHit = false;
-		if (Physics.Raycast(ray, out hit, 100f))
+		RaycastHit hit = unit.RaycastToTarget(target);
+		if (CalculateHit())
 		{
-			if (CalculateHit())
-			{
-				lineRenderer.SetColors(iconColor, iconColor);
-				lineRenderer.SetVertexCount(2);
-				lineRenderer.SetPosition(0, origin);
-				lineRenderer.SetPosition(1, hit.point);
-				lineRenderer.enabled = true;
-				didHit = true;
-			}
+			lineRenderer.SetColors(iconColor, iconColor);
+			lineRenderer.SetVertexCount(2);
+			lineRenderer.SetPosition(0, origin);
+			lineRenderer.SetPosition(1, hit.point);
+			lineRenderer.enabled = true;
+			didHit = true;
 		}
 
 		while (timeVisible > timePassed)
@@ -39,7 +33,7 @@ public class Laser : Action
 		// BUG trying to get mech component even if hitting terrain
 		if (didHit)
 		{
-			hit.collider.GetComponent<Mech>().Damage(damage);
+			target.Damage(damage);
 		}
 
 		base.Fire();

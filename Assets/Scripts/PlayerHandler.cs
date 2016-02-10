@@ -23,7 +23,7 @@ public class PlayerHandler : MonoBehaviour
 	List<Node> path;
 	Node dest;
 	Node oldDest;
-	bool walking = false;
+	//bool walking = false;
 	public Action actionRunning = null;
 	public bool selectingTarget = false;
 
@@ -99,7 +99,7 @@ public class PlayerHandler : MonoBehaviour
 
 	public void ColorGrid()
 	{
-		int movesLeft = selected.movesLeft;
+		//int movesLeft = selected.movesLeft;
 		foreach (Vector3 hex in depthFirst.costSoFar.Keys)
 		{
 			int costSoFar = depthFirst.costSoFar[hex];
