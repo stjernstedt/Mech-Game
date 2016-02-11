@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class ButtonData : MonoBehaviour
@@ -10,12 +11,6 @@ public class ButtonData : MonoBehaviour
 	void Start()
 	{
 		playerHandler = GameObject.FindObjectOfType<PlayerHandler>();
-	}
-
-	// Update is called once per frame
-	void Update()
-	{
-
 	}
 
 	public void Execute()

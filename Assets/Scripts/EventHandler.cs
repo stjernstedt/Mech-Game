@@ -15,7 +15,7 @@ public class EventHandler : MonoBehaviour
 	public delegate void UnitDeathDelegate(Mech unit);
 	public static event UnitDeathDelegate UnitDeathSubscribers;
 
-	public delegate void ActionTakenDelegate(Mech unit);
+	public delegate void ActionTakenDelegate(Action action);
 	public static event ActionTakenDelegate ActionTakenSubscribers;
 
 	public delegate void AIDoneDelegate();
@@ -41,9 +41,9 @@ public class EventHandler : MonoBehaviour
 		UnitDeathSubscribers(unit);
 	}
 
-	public static void ActionTaken(Mech unit)
+	public static void ActionTaken(Action action)
 	{
-		ActionTakenSubscribers(unit);
+		ActionTakenSubscribers(action);
 	}
 
 	public static void AIDone()

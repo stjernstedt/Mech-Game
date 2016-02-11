@@ -132,6 +132,15 @@ public class PlayerHandler : MonoBehaviour
 			button.transform.SetParent(panel.transform);
 			button.GetComponent<Image>().sprite = action.icon;
 			button.GetComponent<Image>().color = action.iconColor;
+			if (action.cooldownTimer > 0)
+			{
+				button.GetComponentInChildren<Text>().gameObject.SetActive(true);
+				button.GetComponentInChildren<Text>().text = "" + action.cooldownTimer;
+			}
+			else
+			{
+				button.GetComponentInChildren<Text>().gameObject.SetActive(false);
+			}
 		}
 	}
 
@@ -144,7 +153,7 @@ public class PlayerHandler : MonoBehaviour
 		}
 	}
 
-	void OnActionTaken(Mech unit)
+	void OnActionTaken(Action action)
 	{
 		UpdateUI();
 	}
@@ -152,5 +161,6 @@ public class PlayerHandler : MonoBehaviour
 	void UpdateUI()
 	{
 		heatGauge.fillAmount = selected.heat / 100f;
+		PopulateActionsPanel();
 	}
 }

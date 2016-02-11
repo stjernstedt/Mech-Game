@@ -7,6 +7,8 @@ public abstract class Action : MonoBehaviour
 
 	public int damage = 10;
 	public int heatGenerated = 10;
+	public int cooldown = 1;
+	public int cooldownTimer = 0;
 
 	public Sprite icon;
 	public Color iconColor;
@@ -21,6 +23,7 @@ public abstract class Action : MonoBehaviour
 		playerHandler = GameObject.Find("World Data").GetComponent<PlayerHandler>();
 		lineRenderer = GameObject.FindObjectOfType<LineRenderer>();
 		unit = GetComponent<Mech>();
+		EventHandler.NewTurnSubscribers += TickCooldown;
 	}
 
 	// Update is called once per frame
@@ -59,8 +62,16 @@ public abstract class Action : MonoBehaviour
 
 	public void Execute()
 	{
-		playerHandler.selectingTarget = true;
-		playerHandler.actionRunning = this;
+		if (cooldownTimer == 0)
+		{
+			cooldownTimer = cooldown;
+			playerHandler.selectingTarget = true;
+			playerHandler.actionRunning = this;
+		}
+		else
+		{
+			Debug.Log("on cooldown!");
+		}
 	}
 
 	public virtual IEnumerator Fire()
@@ -68,7 +79,7 @@ public abstract class Action : MonoBehaviour
 		Debug.Log("fired");
 		playerHandler.actionRunning = null;
 		target = null;
-		EventHandler.ActionTaken(unit);
+		EventHandler.ActionTaken(this);
 		return null;
 	}
 
@@ -88,5 +99,13 @@ public abstract class Action : MonoBehaviour
 	public void GenerateHeat()
 	{
 		unit.heat += heatGenerated;
+	}
+
+	void TickCooldown()
+	{
+		if (cooldownTimer > 0)
+		{
+			cooldownTimer -= 1;
+		}
 	}
 }
