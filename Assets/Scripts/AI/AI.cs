@@ -14,7 +14,6 @@ public class AI : MonoBehaviour
 	PlayerHandler playerHandler;
 	TurnHandler turnHandler;
 
-	//Dictionary<Vector3, Node> hexes;
 	List<Vector3> candidates = new List<Vector3>();
 	Mech target;
 
@@ -26,7 +25,6 @@ public class AI : MonoBehaviour
 		depthFirst = GameObject.Find("World Data").GetComponent<DepthFirst>();
 		playerHandler = GameObject.Find("World Data").GetComponent<PlayerHandler>();
 		turnHandler = GameObject.Find("World Data").GetComponent<TurnHandler>();
-		//hexes = GameObject.Find("World Data").GetComponent<CreateMap>().hexes;
 		target = playerHandler.units[0];
 	}
 
@@ -58,7 +56,6 @@ public class AI : MonoBehaviour
 		// checks all walkable cells if they have better accuracy than current cell, then adds them as candidates
 		foreach (var hex in depthFirst.costSoFar)
 		{
-			//int costSoFar = hex.Value;
 			float checkAccuracy = playerHandler.selected.CalculateAccuracy(hex.Key, target);
 			if (checkAccuracy >= currentCellAccuracy)
 			{

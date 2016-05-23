@@ -14,28 +14,28 @@ public class MoveCamera : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-		if (Input.GetKey(KeyCode.A))
+		if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
 		{
 			Vector3 direction = -transform.right;
 			direction.y = 0;
 			direction.Normalize();
 			Camera.main.transform.Translate(direction * Time.deltaTime * speed, Space.World);
 		}
-		if (Input.GetKey(KeyCode.D))
+		if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
 		{
 			Vector3 direction = transform.right;
 			direction.y = 0;
 			direction.Normalize();
 			Camera.main.transform.Translate(direction * Time.deltaTime * speed, Space.World);
 		}
-		if (Input.GetKey(KeyCode.W))
+		if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
 		{
 			Vector3 direction = transform.forward;
 			direction.y = 0;
 			direction.Normalize();
 			Camera.main.transform.Translate(direction * Time.deltaTime * speed, Space.World);
 		}
-		if (Input.GetKey(KeyCode.S))
+		if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
 		{
 			Vector3 direction = -transform.forward;
 			direction.y = 0;
