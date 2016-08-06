@@ -75,7 +75,14 @@ public class PlayerHandler : MonoBehaviour
 				{
 					currentCell = selected.GetCurrentCell().coord;
 					path = depthFirst.GetPath(currentCell, mouseHandler.FindCell().coord);
-					StartCoroutine(selected.Walk(path));
+					if (path != null)
+					{
+						StartCoroutine(selected.Walk(path));
+					}
+					else
+					{
+						Debug.LogWarning("Destination out of range");
+					}
 				}
 			}
 		}

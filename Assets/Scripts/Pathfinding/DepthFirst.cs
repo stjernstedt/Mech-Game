@@ -65,12 +65,14 @@ public class DepthFirst : MonoBehaviour
 
 	public List<Node> GetPath(Vector3 start, Vector3 dest)
 	{
-		// TODO add checks if destination is in range
+		if (!cameFrom.ContainsKey(dest))
+		{
+			return null;
+		}
 		List<Node> path = new List<Node>();
 		path.Add(hexes[dest]);
 		Stack<Node> pathStack = new Stack<Node>();
 		pathStack.Push(hexes[dest]);
-
 
 		Vector3 current = dest;
 		while (current != start)

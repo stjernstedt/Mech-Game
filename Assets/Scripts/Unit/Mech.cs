@@ -47,7 +47,7 @@ public class Mech : MonoBehaviour
 	{
 		if (Input.GetMouseButtonDown(0))
 		{
-			if (!playerHandler.actionRunning)
+			if (!playerHandler.actionRunning && !playerHandler.aiUnits.Contains(this))
 			{
 				playerHandler.SelectUnit(this);
 			}
