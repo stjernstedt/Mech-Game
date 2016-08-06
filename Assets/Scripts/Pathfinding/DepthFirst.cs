@@ -63,6 +63,7 @@ public class DepthFirst : MonoBehaviour
 		cameFrom.Clear();
 	}
 
+	// gets a path from the walkable cells by checking cameFrom
 	public List<Node> GetPath(Vector3 start, Vector3 dest)
 	{
 		if (!cameFrom.ContainsKey(dest))

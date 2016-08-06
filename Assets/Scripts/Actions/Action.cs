@@ -53,7 +53,11 @@ public abstract class Action : MonoBehaviour
 					}
 					else
 					{
+						// TODO move to reset function?
 						Debug.Log("can't see target!");
+						playerHandler.actionRunning = null;
+						target = null;
+						cooldownTimer = 0;
 					}
 				}
 			}
