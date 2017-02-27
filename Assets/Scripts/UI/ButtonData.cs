@@ -10,7 +10,7 @@ public class ButtonData : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		playerHandler = GameObject.FindObjectOfType<PlayerHandler>();
+		playerHandler = FindObjectOfType<PlayerHandler>();
 	}
 
 	public void Execute()

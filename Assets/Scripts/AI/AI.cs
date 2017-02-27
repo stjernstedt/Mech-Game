@@ -53,6 +53,7 @@ public class AI : MonoBehaviour
 			return;
 		}
 
+		//BUG does not consider if it can see target
 		// checks all walkable cells if they have better accuracy than current cell, then adds them as candidates
 		foreach (var hex in depthFirst.costSoFar)
 		{

@@ -31,7 +31,8 @@ public class Cannon : Action
 			smokeTrail.transform.position = Vector3.Lerp(origin, target.transform.position + new Vector3(0, 0.4f, 0) + randomV3, fracPath);
 			yield return null;
 		}
-		smokeTrail.enableEmission = false;
+        //smokeTrail.enableEmission = false;
+        smokeTrail.Stop();
 		while (smokeTrail.IsAlive())
 		{
 			yield return null;
